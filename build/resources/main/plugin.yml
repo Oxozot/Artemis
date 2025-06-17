@@ -3,3 +3,8 @@ version: '0.0.0'
 main: fr.oxozot.artemis.Artemis
 api-version: '1.21'
 authors: [ Oxozot, Kayrouge ]
+commands:
+  test:
+    permission: artemis.testcmd
+    description: ceci est une commande de test
+    usage: /test
