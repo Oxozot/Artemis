@@ -24,8 +24,9 @@ public class CommandTest implements CommandExecutor {
         } else {
 
             Player player = (Player) sender;
-
-            main.getServer().sendMessage(Component.text(player.getName().toString() + " vient de faire la commande de Test").color(TextColor.color(0, 255, 0)));
+            if (cmd.getName() == "test"){
+                main.getServer().sendMessage(Component.text(player.getName().toString() + " vient de faire la commande de Test").color(TextColor.color(0, 255, 0)));
+            }
 
         }
 
