@@ -37,41 +37,48 @@ public class SwitchModeCommand implements CommandExecutor {
             ItemStack item = player.getInventory().getItemInMainHand();
 
             if (item != null && item.getType() != null && item.getType() != Material.AIR && item.getType() == Material.DIAMOND_PICKAXE) {
-                player.sendActionBar(Component.text("Changement de mode effectue").color(TextColor.color(0,255,0)));
+                player.sendActionBar(Component.text("Changement de mode effectue").color(TextColor.color(0, 255, 0)));
 
-                if (item.hasItemMeta()){
-                    return true;
-                } else {
+                ItemMeta itM = item.getItemMeta();
 
-                    ItemMeta itM = item.getItemMeta();
+                NamespacedKey typePickaxe = new NamespacedKey(main, "typePickaxe");
 
-                    NamespacedKey typePickaxe = new NamespacedKey(main, "typePickaxe");
+                PersistentDataContainer itemContainer = itM.getPersistentDataContainer();
 
-                    PersistentDataContainer itemContainer = itM.getPersistentDataContainer();
+                if (itemContainer.has(typePickaxe, PersistentDataType.BOOLEAN)) {
 
-                    if (itemContainer.has(typePickaxe) && itemContainer.has(typePickaxe, PersistentDataType.BOOLEAN)){
+                    player.sendMessage(Component.text("a un PersistentDataContainer et de type boolean"));
 
-                        player.sendMessage(Component.text("a un PersistentDataContainer et de type boolean"));
+                    Boolean value = itemContainer.get(typePickaxe, PersistentDataType.BOOLEAN);
 
-                        if (itemContainer.get(typePickaxe, PersistentDataType.BOOLEAN) == false){
-                            itemContainer.set(typePickaxe, PersistentDataType.BOOLEAN, true); // true si c'est un Hammer et false une pioche
-                            player.sendMessage(Component.text(Objects.requireNonNull(itemContainer.get(typePickaxe, PersistentDataType.BOOLEAN)).toString() + " Mode de la pioche"));
+                    if (Boolean.FALSE.equals(value)) {
+                        itemContainer.set(typePickaxe, PersistentDataType.BOOLEAN, true); // true si c'est un Hammer et false une pioche
 
-                        } else {
-                            itemContainer.set(typePickaxe, PersistentDataType.BOOLEAN, false); // true si c'est un Hammer et false une pioche
-                            player.sendMessage(Component.text(Objects.requireNonNull(itemContainer.get(typePickaxe, PersistentDataType.BOOLEAN)).toString() + " Mode de la pioche"));
+                        itM.customName(Component.text("Hammer").color(TextColor.color(0,255, 0)));
 
-                        }
+
+                        item.setItemMeta(itM); // 💥 OBLIGATOIRE pour que les changements soient appliqués
+                        player.getInventory().setItem(player.getInventory().getHeldItemSlot(), item);
+                        player.sendMessage(Component.text(Objects.requireNonNull(itemContainer.get(typePickaxe, PersistentDataType.BOOLEAN)).toString() + " Mode de la pioche"));
 
                     } else {
-                        itemContainer.set(typePickaxe, PersistentDataType.BOOLEAN, true); // true si c'est un Hammer et false une pioche
+                        itemContainer.set(typePickaxe, PersistentDataType.BOOLEAN, false); // true si c'est un Hammer et false une pioche
+
+                        itM.customName(Component.text("Pioche").color(TextColor.color(0,255, 0)));
+
+                        item.setItemMeta(itM); // 💥 OBLIGATOIRE pour que les changements soient appliqués
+                        player.getInventory().setItem(player.getInventory().getHeldItemSlot(), item);
+                        player.sendMessage(Component.text(Objects.requireNonNull(itemContainer.get(typePickaxe, PersistentDataType.BOOLEAN)).toString() + " Mode de la pioche"));
+
                     }
 
+                } else {
+                    itemContainer.set(typePickaxe, PersistentDataType.BOOLEAN, true); // true si c'est un Hammer et false une pioche
+                    itM.customName(Component.text("Hammer").color(TextColor.color(0,255, 0)));
+
+                    item.setItemMeta(itM); // 💥 OBLIGATOIRE pour que les changements soient appliqués
+                    player.getInventory().setItem(player.getInventory().getHeldItemSlot(), item);
                 }
-
-            } else {
-
-                player.sendMessage(Component.text("Erreur: Pioche de niveau insuffisant ou pas de pioche en main").color(TextColor.color(255, 0, 0)));
 
             }
 

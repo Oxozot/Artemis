@@ -18,7 +18,7 @@ public final class Artemis extends JavaPlugin {
         pm.registerEvents(new ArtemisListener(this), this);
 
         getCommand("test").setExecutor(new CommandTest(this));
-        getCommand("switchMode").setExecutor(new SwitchModeCommand(this));
+        getCommand("switchmode").setExecutor(new SwitchModeCommand(this));
 
     }
 

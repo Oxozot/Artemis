@@ -8,6 +8,6 @@ commands:
     permission: artemis.testcmd
     description: ceci est une commande de test
     usage: /test
-  switchMode:
+  switchmode:
     description: Permet au joueur de changer sa pioche de mode (necessite une pioche de diamant ou plus)
     usage: /switchMode
