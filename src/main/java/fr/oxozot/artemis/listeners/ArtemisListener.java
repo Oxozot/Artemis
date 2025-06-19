@@ -53,7 +53,7 @@ public class ArtemisListener implements Listener {
 
         ItemStack item = player.getInventory().getItem(player.getInventory().getHeldItemSlot());
         assert item != null;
-        if (item.getType() == Material.DIAMOND_PICKAXE){
+        if (item != null && item.getType() != null && item.getType() != Material.AIR && item.getType() == Material.DIAMOND_PICKAXE){
 
             if (!item.hasItemMeta()){
                 player.sendMessage(Component.text("pas d'item M"));
@@ -78,6 +78,18 @@ public class ArtemisListener implements Listener {
 
                     } else {
                         player.sendMessage(Component.text("Boolean True"));
+
+                        // drop l'item casse autour du block casse (a appliquer pour les autres blocks)
+                        Material tempMat = player.getWorld().getBlockAt((int) (blockLocX + 1), (int) blockLocY, (int) blockLocZ).getType();
+
+                        Location locTemp = player.getWorld().getBlockAt((int) (blockLocX + 1), (int) blockLocY, (int) blockLocZ).getLocation();
+
+                        ItemStack itTemp = new ItemStack(tempMat, 1);
+
+                        player.getWorld().dropItem(locTemp, itTemp);
+
+                        // casse un block autour du block casse
+                        // verfier si le block qu'on casse autour ne soit pas un block incassable comme la bedrock ou portail de l'end
                         player.getWorld().getBlockAt((int) (blockLocX + 1), (int) blockLocY, (int) blockLocZ).setType(Material.AIR);
 
                     }
