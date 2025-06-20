@@ -65,7 +65,7 @@ public class ArtemisListener implements Listener {
         ItemStack item = player.getInventory().getItem(player.getInventory().getHeldItemSlot());
         if (item != null) {
             item.getType();
-            if (item.getType() != Material.AIR && item.getType() == Material.DIAMOND_PICKAXE) {
+            if (item.getType() != Material.AIR && (item.getType() == Material.DIAMOND_PICKAXE || item.getType() == Material.NETHERITE_PICKAXE)) {
 
                 if (!item.hasItemMeta()) {
                 } else {
@@ -80,13 +80,7 @@ public class ArtemisListener implements Listener {
                         Boolean value = itemContainer.get(typePickaxe, PersistentDataType.BOOLEAN);
                         if (Boolean.FALSE.equals(value)) {
                         } else {
-                            // drop l'item casse autour du block casse (a appliquer pour les autres blocks)
-
-
-                            // casse un block autour du block casse
-                            // verfier si le block qu'on casse autour ne soit pas un block incassable comme la bedrock ou portail de l'end
-                            // player.getWorld().getBlockAt((int) (blockLocX + 1), (int) blockLocY, (int) blockLocZ).setType(Material.AIR);
-
+                            // Liste des matériaux de blocs considérés comme incassables
                             ArrayList<Material> IllegalBlockMaterial = new ArrayList<>();
 
                             IllegalBlockMaterial.add(Material.BEDROCK);
@@ -97,30 +91,32 @@ public class ArtemisListener implements Listener {
                             IllegalBlockMaterial.add(Material.STRUCTURE_BLOCK);
                             IllegalBlockMaterial.add(Material.END_PORTAL_FRAME);
 
-                            for (Material material: IllegalBlockMaterial){
-
-                            }
-
-
+                            // Si la face cassée est orientée vers le nord ou le sud,
+                            // on s'apprête à casser les blocs autour du bloc cassé dans un cube 3x3x3
                             if (face == BlockFace.SOUTH || face == BlockFace.NORTH) {
+
+                                // Parcours des blocs autour du bloc cassé (dans un cube 3x3x3)
                                 for (int i = (int) blockLocX - 1; i <= blockLocX + 1; i++) {
+                                    for (int j = (int) blockLocY - 1; j <= blockLocY + 1; j++) {
 
-                                    for (int j = (int) (blockLocY - 1); j <= blockLocY + 1; j++) {
-
-
+                                        // Récupère le matériau du bloc à la position actuelle (en Z fixe)
                                         Material tempMat = player.getWorld().getBlockAt(i, j, (int) blockLocZ).getType();
 
+                                        // Vérifie si le bloc est incassable, et si oui, on le saute
+                                        if (IllegalBlockMaterial.contains(tempMat)) continue;
+
+                                        // Récupère la position du bloc
                                         Location locTemp = player.getWorld().getBlockAt(i, j, (int) blockLocZ).getLocation();
 
+                                        // Crée un objet représentant le bloc en tant qu'objet ramassable
                                         ItemStack itTemp = new ItemStack(tempMat, 1);
 
+                                        // Fait tomber l'objet au sol (simulateur de drop du bloc)
                                         player.getWorld().dropItem(locTemp, itTemp);
 
+                                        // Remplace le bloc par de l'air (le casse)
                                         player.getWorld().getBlockAt(i, j, (int) blockLocZ).setType(Material.AIR);
-
-
                                     }
-
                                 }
                             } else if (face == BlockFace.WEST || face == BlockFace.EAST) {
 
@@ -130,6 +126,8 @@ public class ArtemisListener implements Listener {
 
 
                                         Material tempMat = player.getWorld().getBlockAt((int) blockLocX, j, i).getType();
+
+                                        if (IllegalBlockMaterial.contains(tempMat)) continue;
 
                                         Location locTemp = player.getWorld().getBlockAt((int) blockLocX, j, i).getLocation();
 
@@ -150,6 +148,8 @@ public class ArtemisListener implements Listener {
                                     for (int j = (int) (blockLocZ - 1); j <= blockLocZ + 1; j++) {
 
                                         Material tempMat = player.getWorld().getBlockAt(i, (int) blockLocY, j).getType();
+
+                                        if (IllegalBlockMaterial.contains(tempMat)) continue;
 
                                         Location locTemp = player.getWorld().getBlockAt(i, (int) blockLocY, j).getLocation();
 

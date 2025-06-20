@@ -36,7 +36,7 @@ public class SwitchModeCommand implements CommandExecutor {
 
             ItemStack item = player.getInventory().getItemInMainHand();
 
-            if (item != null && item.getType() != null && item.getType() != Material.AIR && item.getType() == Material.DIAMOND_PICKAXE) {
+            if (item != null && item.getType() != null && item.getType() != Material.AIR && (item.getType() == Material.DIAMOND_PICKAXE || item.getType() == Material.NETHERITE_PICKAXE)) {
                 player.sendActionBar(Component.text("Changement de mode effectue").color(TextColor.color(0, 255, 0)));
 
                 ItemMeta itM = item.getItemMeta();
